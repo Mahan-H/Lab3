@@ -1,5 +1,6 @@
 package org.translation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -37,18 +38,17 @@ public class Main {
      * @param translator the Translator implementation to use in the program
      */
     public static void runProgram(Translator translator) {
+        String quit = "quit";
         while (true) {
             String country = promptForCountry(translator);
-            // TODO CheckStyle: The String "quit" appears 3 times in the file.
-            // TODO Checkstyle: String literal expressions should be on the left side of an equals comparison
-            if (country.equals("quit")) {
+            if (quit.equals(country)) {
                 break;
             }
             // TODO Task: Once you switch promptForCountry so that it returns the country
             //            name rather than the 3-letter country code, you will need to
             //            convert it back to its 3-letter country code when calling promptForLanguage
             String language = promptForLanguage(translator, country);
-            if (language.equals("quit")) {
+            if (quit.equals(language)) {
                 break;
             }
             // TODO Task: Once you switch promptForLanguage so that it returns the language
@@ -61,7 +61,7 @@ public class Main {
             Scanner s = new Scanner(System.in);
             String textTyped = s.nextLine();
 
-            if ("quit".equals(textTyped)) {
+            if (quit.equals(textTyped)) {
                 break;
             }
         }
@@ -70,12 +70,10 @@ public class Main {
     // Note: CheckStyle is configured so that we don't need javadoc for private methods
     private static String promptForCountry(Translator translator) {
         List<String> countries = translator.getCountries();
-        // TODO Task: replace the following println call, sort the countries alphabetically,
-        //            and print them out; one per line
-        //      hint: class Collections provides a static sort method
-        // TODO Task: convert the country codes to the actual country names before sorting
-        System.out.println(countries);
-
+        countries.sort(String::compareTo);
+        for (String country : countries) {
+            System.out.println(country);
+        }
         System.out.println("select a country from above:");
 
         Scanner s = new Scanner(System.in);
@@ -86,10 +84,11 @@ public class Main {
     // Note: CheckStyle is configured so that we don't need javadoc for private methods
     private static String promptForLanguage(Translator translator, String country) {
 
-        // TODO Task: replace the line below so that we sort the languages alphabetically and print them out; one per line
-        // TODO Task: convert the language codes to the actual language names before sorting
-        System.out.println(translator.getCountryLanguages(country));
-
+        List<String> languages = translator.getCountryLanguages(country);
+        languages.sort(String::compareTo);
+        for (String language : languages) {
+            System.out.println(language);
+        }
         System.out.println("select a language from above:");
 
         Scanner s = new Scanner(System.in);
