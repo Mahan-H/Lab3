@@ -25,8 +25,8 @@ public class Main {
         // TODO Task: once you finish the JSONTranslator,
         //            you can use it here instead of the InLabByHandTranslator
         //            to try out the whole program!
-        // Translator translator = new JSONTranslator(null);
-        Translator translator = new InLabByHandTranslator();
+        Translator translator = new JSONTranslator("sample.json");
+        //Translator translator = new InLabByHandTranslator();
 
         runProgram(translator);
     }
@@ -44,9 +44,7 @@ public class Main {
             if (quit.equals(country)) {
                 break;
             }
-            // TODO Task: Once you switch promptForCountry so that it returns the country
-            //            name rather than the 3-letter country code, you will need to
-            //            convert it back to its 3-letter country code when calling promptForLanguage
+
             String language = promptForLanguage(translator, country);
             if (quit.equals(language)) {
                 break;
@@ -56,7 +54,8 @@ public class Main {
             //            convert it back to its 2-letter language code when calling translate.
             //            Note: you should use the actual names in the message printed below though,
             //            since the user will see the displayed message.
-            System.out.println(country + " in " + language + " is " + translator.translate(country, language));
+            LanguageCodeConverter lcc = new LanguageCodeConverter();
+            System.out.println(country + " in " + language + " is " + translator.translate(country, lcc.fromLanguage(language)));
             System.out.println("Press enter to continue or quit to exit.");
             Scanner s = new Scanner(System.in);
             String textTyped = s.nextLine();
@@ -69,10 +68,10 @@ public class Main {
 
     // Note: CheckStyle is configured so that we don't need javadoc for private methods
     private static String promptForCountry(Translator translator) {
-        List<String> countries = translator.getCountries();
-        countries.sort(String::compareTo);
-        for (String country : countries) {
-            System.out.println(country);
+        translator.getCountries().sort(String::compareTo);
+        CountryCodeConverter ccc = new CountryCodeConverter();
+        for (String country : translator.getCountries()) {
+            System.out.println(ccc.fromCountryCode(country));
         }
         System.out.println("select a country from above:");
 
@@ -84,13 +83,12 @@ public class Main {
     // Note: CheckStyle is configured so that we don't need javadoc for private methods
     private static String promptForLanguage(Translator translator, String country) {
 
-        List<String> languages = translator.getCountryLanguages(country);
-        languages.sort(String::compareTo);
-        for (String language : languages) {
-            System.out.println(language);
+        translator.getCountryLanguages(country).sort(String::compareTo);
+        LanguageCodeConverter lcc = new LanguageCodeConverter();
+        for (String language : translator.getCountryLanguages(country)) {
+            System.out.println(lcc.fromLanguageCode(language));
         }
         System.out.println("select a language from above:");
-
         Scanner s = new Scanner(System.in);
         return s.nextLine();
     }
